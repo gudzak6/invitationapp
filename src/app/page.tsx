@@ -60,7 +60,8 @@ export default function Home() {
                 muted
                 playsInline
               >
-                <source src="/homepage.mov" type="video/mp4" />
+                <source src="/mp4example.mp4" type="video/mp4" />
+                <source src="/homepage.mov" type="video/quicktime" />
               </video>
             </div>
           </div>
