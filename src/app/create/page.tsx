@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -20,7 +20,7 @@ const generateToken = () => {
     .join("");
 };
 
-export default function CreateInvitePage() {
+function CreateInviteForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get("id");
@@ -305,5 +305,21 @@ export default function CreateInvitePage() {
         </form>
       </div>
     </main>
+  );
+}
+
+export default function CreateInvitePage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-sand-50">
+          <div className="container-base py-10">
+            <p className="text-sm text-ink-600">Loading invite editor...</p>
+          </div>
+        </main>
+      }
+    >
+      <CreateInviteForm />
+    </Suspense>
   );
 }
