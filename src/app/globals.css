@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  @apply bg-sand-50 text-ink-900 antialiased;
+}
+
+::selection {
+  @apply bg-ink-900 text-sand-50;
+}
+
+.container-base {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+}
+
+.section {
+  @apply py-14 md:py-20;
+}
+
+.glass-panel {
+  @apply rounded-3xl border border-white/60 bg-white/70 shadow-sm backdrop-blur;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.animate-fadeOut {
+  animation: fadeOut 0.6s ease-out forwards;
+}
