@@ -108,6 +108,14 @@ function CreateInviteForm() {
     loadInvite();
   }, [editId, editToken, isEditing]);
 
+  const rememberCreatorToken = (id: string, token: string) => {
+    try {
+      localStorage.setItem(`creator_token_${id}`, token);
+    } catch (error) {
+      // Ignore storage failures.
+    }
+  };
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setError("");
@@ -148,6 +156,7 @@ function CreateInviteForm() {
         return;
       }
 
+      rememberCreatorToken(editId, editToken);
       router.push(`/created/${editId}?token=${editToken}`);
       return;
     }
@@ -175,6 +184,7 @@ function CreateInviteForm() {
       return;
     }
 
+    rememberCreatorToken(data.id, creatorToken);
     router.push(`/created/${data.id}?token=${creatorToken}`);
   };
 

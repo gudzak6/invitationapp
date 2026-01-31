@@ -12,7 +12,11 @@ type InviteResponse = {
 export default function CreatedPage() {
   const params = useParams<{ id: string }>();
   const searchParams = useSearchParams();
-  const token = searchParams.get("token") ?? "";
+  const token =
+    searchParams.get("token") ??
+    (typeof window !== "undefined"
+      ? localStorage.getItem(`creator_token_${params.id}`) ?? ""
+      : "");
   const [invite, setInvite] = useState<Invite | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("loading");
   const [publishState, setPublishState] = useState<"idle" | "publishing" | "done">(
@@ -112,7 +116,7 @@ export default function CreatedPage() {
           <p className="mt-6 text-sm text-ink-600">Loading preview...</p>
         )}
 
-        {invite && (
+        {!!params.id && !!token && (
           <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_1fr]">
             <div className="space-y-8">
               <div className="glass-panel p-6">
@@ -161,6 +165,13 @@ export default function CreatedPage() {
               </div>
             </div>
           </div>
+        )}
+
+        {!token && (
+          <p className="mt-6 text-sm text-red-600">
+            Missing creator token. Open this page from the create flow or use
+            the edit link.
+          </p>
         )}
 
         <div className="mt-8 flex flex-wrap items-center gap-4">
