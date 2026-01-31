@@ -18,7 +18,7 @@ type InviteResponse = {
 export default function RecipientPage() {
   const params = useParams<{ id: string }>();
   const searchParams = useSearchParams();
-  const token = searchParams.get("t");
+  const token = searchParams.get("t") ?? searchParams.get("token");
   const [invite, setInvite] = useState<Invite | null>(null);
   const [loading, setLoading] = useState(true);
   const [unlocked, setUnlocked] = useState(false);
@@ -174,6 +174,7 @@ export default function RecipientPage() {
 
   const submitRsvp = async (status: "going" | "cant_go") => {
     if (!invite?.id) return;
+    if (rsvpStatus) return;
     const trimmedName = rsvpName.trim();
     if (!trimmedName) {
       setRsvpError("Please enter your name.");
@@ -367,7 +368,7 @@ export default function RecipientPage() {
                   <button
                     type="button"
                     onClick={() => submitRsvp("going")}
-                    disabled={rsvpLoading || rsvpStatus === "going"}
+                    disabled={rsvpLoading || rsvpStatus !== null}
                     className="rounded-full border border-ink-900/15 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-ink-900 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {rsvpStatus === "going" ? "You're going" : "I'm going"}
@@ -375,7 +376,7 @@ export default function RecipientPage() {
                   <button
                     type="button"
                     onClick={() => submitRsvp("cant_go")}
-                    disabled={rsvpLoading || rsvpStatus === "cant_go"}
+                    disabled={rsvpLoading || rsvpStatus !== null}
                     className="rounded-full border border-ink-900/15 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-ink-900 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {rsvpStatus === "cant_go" ? "Can't go" : "Can't go"}
