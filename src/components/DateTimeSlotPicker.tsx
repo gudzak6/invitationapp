@@ -2,8 +2,9 @@
 
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import type { DropdownProps } from "react-day-picker";
 import type { ChangeEvent, ChangeEventHandler } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { Children, isValidElement, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -164,31 +165,41 @@ export default function DateTimeSlotPicker({
                 <Calendar
                   captionLayout="dropdown"
                   components={{
-                    Dropdown: (props) => (
-                      <Select
-                        onValueChange={(value) => {
-                          if (props.onChange) {
-                            handleCalendarChange(value, props.onChange);
-                          }
-                        }}
-                        value={String(props.value)}
-                      >
-                        <SelectTrigger className="first:flex-1 last:shrink-0">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {props.options?.map((option) => (
-                            <SelectItem
-                              disabled={option.disabled}
-                              key={option.value}
-                              value={String(option.value)}
-                            >
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )
+                    Dropdown: (props: DropdownProps) => {
+                      const options = Children.toArray(props.children).filter(
+                        (
+                          child
+                        ): child is React.ReactElement<
+                          React.OptionHTMLAttributes<HTMLOptionElement>
+                        > => isValidElement(child) && child.type === "option"
+                      );
+
+                      return (
+                        <Select
+                          onValueChange={(value) => {
+                            if (props.onChange) {
+                              handleCalendarChange(value, props.onChange);
+                            }
+                          }}
+                          value={String(props.value)}
+                        >
+                          <SelectTrigger className="first:flex-1 last:shrink-0">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {options.map((option) => (
+                              <SelectItem
+                                disabled={option.props.disabled}
+                                key={String(option.props.value)}
+                                value={String(option.props.value)}
+                              >
+                                {option.props.children}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      );
+                    }
                   }}
                   hideNavigation
                   mode="single"
