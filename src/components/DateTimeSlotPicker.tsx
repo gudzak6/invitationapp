@@ -201,7 +201,6 @@ export default function DateTimeSlotPicker({
                       );
                     }
                   }}
-                  hideNavigation
                   mode="single"
                   month={month}
                   onMonthChange={setMonth}
