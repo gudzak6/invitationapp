@@ -6,4 +6,8 @@ file.env
 env.example
 public/*.mov
 public/*.mp4
+!public/homepage.mov
+!public/homescreen.mov
+!public/mp4example.mp4
+!public/scratch.mov
 node_modules

@@ -121,7 +121,7 @@ export default function CreatedPage() {
             <div className="space-y-8">
               <div className="glass-panel p-6">
                 <p className="text-xs uppercase tracking-[0.25em] text-ink-600">
-                  Creator preview link
+                  Preview link (unpublished)
                 </p>
                 <div className="mt-3 rounded-2xl border border-ink-900/10 bg-white px-4 py-3 text-xs text-ink-800">
                   {creatorLink}
@@ -131,14 +131,17 @@ export default function CreatedPage() {
                   onClick={() => copyLink(creatorLink)}
                   className="mt-3 rounded-full border border-ink-900/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-ink-900"
                 >
-                  {copied === creatorLink ? "Copied" : "Copy link"}
+                  {copied === creatorLink ? "Copied" : "Copy preview link"}
                 </button>
+                <p className="mt-2 text-xs text-ink-600">
+                  Share this to let guests play the game before you publish.
+                </p>
               </div>
 
               <div className="glass-panel p-6">
                 <div className="flex items-center justify-between">
                   <p className="text-xs uppercase tracking-[0.25em] text-ink-600">
-                    Recipient link
+                    Guest link (published)
                   </p>
                   {!isPublished && (
                     <span className="rounded-full border border-ink-900/10 bg-white/70 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-ink-600">
@@ -155,11 +158,11 @@ export default function CreatedPage() {
                   disabled={!isPublished}
                   className="mt-3 rounded-full border border-ink-900/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-ink-900 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {copied === recipientLink ? "Copied" : "Copy link"}
+                  {copied === recipientLink ? "Copied" : "Copy guest link"}
                 </button>
                 {!isPublished && (
                   <p className="mt-2 text-xs text-ink-600">
-                    Publish the invite to unlock the recipient link.
+                    Publish the invite to unlock the guest link.
                   </p>
                 )}
               </div>
