@@ -164,7 +164,6 @@ export default function DateTimeSlotPicker({
                 <Calendar
                   captionLayout="dropdown"
                   components={{
-                    MonthCaption: (props) => props.children,
                     DropdownNav: (props) => (
                       <div className="flex w-full items-center gap-2">
                         {props.children}
