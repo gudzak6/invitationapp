@@ -9,6 +9,7 @@ type Fish = {
   top: string;
   delay: number;
   duration: number;
+  direction: "left" | "right";
 };
 
 const lanes = ["32%", "52%", "70%"];
@@ -62,9 +63,32 @@ export default function FishingGame({ onWin }: GameProps) {
       id: `fish-${i}-${Math.random().toString(16).slice(2)}`,
       top: lanes[i % lanes.length],
       delay: i * 0.6,
-      duration: 6.5 + (i % 2) * 0.8
+      duration: 6.5 + (i % 2) * 0.8,
+      direction: i % 2 === 0 ? "right" : "left"
     }));
   }, []);
+
+  const FishSvg = ({
+    direction
+  }: {
+    direction: "left" | "right";
+  }) => (
+    <svg
+      width="70"
+      height="36"
+      viewBox="0 0 70 36"
+      className="h-full w-full"
+      style={{ transform: direction === "left" ? "scaleX(-1)" : "none" }}
+      aria-hidden="true"
+    >
+      <ellipse cx="32" cy="18" rx="22" ry="14" fill="#7b8fa3" />
+      <polygon points="50,18 68,6 68,30" fill="#6a7f93" />
+      <polygon points="30,6 36,0 40,8" fill="#6a7f93" />
+      <polygon points="30,30 36,36 40,28" fill="#6a7f93" />
+      <circle cx="18" cy="16" r="2.5" fill="#1f2a33" />
+      <circle cx="19" cy="15" r="1" fill="#ffffff" />
+    </svg>
+  );
 
   // Clear toast quickly
   useEffect(() => {
@@ -175,7 +199,7 @@ export default function FishingGame({ onWin }: GameProps) {
                 e.preventDefault();
                 if (!caught && !dropping && !isGameOver) setToast("Use the hook!");
               }}
-              className="absolute z-10 flex h-7 w-14 items-center justify-center rounded-full bg-[#5d768b]/70 shadow-sm"
+              className="absolute z-10 flex h-9 w-[70px] items-center justify-center"
               style={{ top: fish.top, left: 0 }}
               initial={{ x: startX }}
               animate={{ x: [startX, endX] }}
@@ -186,8 +210,7 @@ export default function FishingGame({ onWin }: GameProps) {
                 ease: "linear"
               }}
             >
-              <span className="h-2 w-2 rounded-full bg-[#2e3e4d]" />
-              <span className="ml-1 h-[6px] w-[6px] rounded-full bg-white/70" />
+              <FishSvg direction={fish.direction} />
             </motion.button>
           );
         })}
@@ -215,7 +238,7 @@ export default function FishingGame({ onWin }: GameProps) {
           {/* hook head (collision hitbox) */}
           <motion.div
             ref={hookRef}
-            className="absolute left-1/2 top-[40px] h-7 w-7 -translate-x-1/2 rounded-full border border-white/60 bg-white/70 shadow-sm"
+            className="absolute left-1/2 top-[40px] flex h-8 w-8 -translate-x-1/2 items-center justify-center"
             initial={false}
             animate={dropping ? { y: 180, scale: 1 } : { y: 0, scale: 0.98 }}
             transition={{ duration: 0.38, ease: "easeIn" }}
@@ -223,7 +246,30 @@ export default function FishingGame({ onWin }: GameProps) {
               if (!dropping) return;
               handleDropComplete();
             }}
-          />
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-7 w-7"
+              style={{ transform: "translate(1px, 1px) rotate(360deg) scaleX(-1)" }}
+              aria-hidden="true"
+            >
+              <path
+                d="M12 3v9c0 2.5 2 4.5 4.5 4.5S21 14.5 21 12"
+                fill="none"
+                stroke="rgba(46, 62, 77, 0.9)"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+              <path
+                d="M21 12c0 1.7-1.3 3-3 3-1.3 0-2.3-.8-2.8-1.9"
+                fill="none"
+                stroke="rgba(46, 62, 77, 0.9)"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+              <circle cx="12" cy="3" r="1.5" fill="rgba(46, 62, 77, 0.9)" />
+            </svg>
+          </motion.div>
         </motion.div>
       )}
 

@@ -118,6 +118,21 @@ export default function CreatedPage() {
 
         {!!params.id && !!token && (
           <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_1fr]">
+            <div className="glass-panel p-6">
+              <p className="text-xs uppercase tracking-[0.25em] text-ink-600">
+                Preview the game
+              </p>
+              <p className="mt-2 text-sm text-ink-600">
+                This is the same experience guests see before the invite unlocks.
+              </p>
+              <div className="mt-4 overflow-hidden rounded-3xl border border-ink-900/10 bg-white">
+                <iframe
+                  title="Invite preview"
+                  src={`/i/${params.id}?t=${token}`}
+                  className="h-[560px] w-full"
+                />
+              </div>
+            </div>
             <div className="space-y-8">
               <div className="glass-panel p-6">
                 <p className="text-xs uppercase tracking-[0.25em] text-ink-600">
