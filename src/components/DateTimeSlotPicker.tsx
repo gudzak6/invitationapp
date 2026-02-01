@@ -66,8 +66,8 @@ function formatTimeLabel(date: Date, timezone: string) {
 
 export default function DateTimeSlotPicker({
   timezone = "America/New_York",
-  durationMins = 30,
-  timeWindows = [{ start: "18:00", end: "22:00" }],
+  durationMins = 60,
+  timeWindows = [{ start: "12:00", end: "23:59" }],
   onSelect,
   initialSelection = null
 }: Props) {
@@ -148,70 +148,60 @@ export default function DateTimeSlotPicker({
       <div className="glass-panel p-4">
         <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr]">
           <div className="space-y-3">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !date && "text-ink-500"
-                  )}
-                  variant="outline"
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP") : <span>Pick a date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent align="start" className="w-auto p-0">
-                <Calendar
-                  captionLayout="dropdown"
-                  components={{
-                    Dropdown: (props: DropdownProps) => {
-                      const options = Children.toArray(props.children).filter(
-                        (
-                          child
-                        ): child is React.ReactElement<
-                          React.OptionHTMLAttributes<HTMLOptionElement>
-                        > => isValidElement(child) && child.type === "option"
-                      );
+            <div className="flex items-center gap-2 text-sm font-medium text-ink-700">
+              <CalendarIcon className="h-4 w-4" />
+              <span>{date ? format(date, "PPP") : "Pick a date"}</span>
+            </div>
+            <div className="rounded-2xl border border-ink-900/10 bg-white/70 p-2">
+              <Calendar
+                captionLayout="dropdown"
+                components={{
+                  Dropdown: (props: DropdownProps) => {
+                    const options = Children.toArray(props.children).filter(
+                      (
+                        child
+                      ): child is React.ReactElement<
+                        React.OptionHTMLAttributes<HTMLOptionElement>
+                      > => isValidElement(child) && child.type === "option"
+                    );
 
-                      return (
-                        <Select
-                          onValueChange={(value) => {
-                            if (props.onChange) {
-                              handleCalendarChange(value, props.onChange);
-                            }
-                          }}
-                          value={String(props.value)}
-                        >
-                          <SelectTrigger className="first:flex-1 last:shrink-0">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {options.map((option) => (
-                              <SelectItem
-                                disabled={option.props.disabled}
-                                key={String(option.props.value)}
-                                value={String(option.props.value)}
-                              >
-                                {option.props.children}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      );
-                    }
-                  }}
-                  mode="single"
-                  month={month}
-                  onMonthChange={setMonth}
-                  onSelect={(value) => {
-                    setDate(value ?? undefined);
-                    setSelectedSlotISO(null);
-                  }}
-                  selected={date}
-                />
-              </PopoverContent>
-            </Popover>
+                    return (
+                      <Select
+                        onValueChange={(value) => {
+                          if (props.onChange) {
+                            handleCalendarChange(value, props.onChange);
+                          }
+                        }}
+                        value={String(props.value)}
+                      >
+                        <SelectTrigger className="first:flex-1 last:shrink-0">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {options.map((option) => (
+                            <SelectItem
+                              disabled={option.props.disabled}
+                              key={String(option.props.value)}
+                              value={String(option.props.value)}
+                            >
+                              {option.props.children}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    );
+                  }
+                }}
+                mode="single"
+                month={month}
+                onMonthChange={setMonth}
+                onSelect={(value) => {
+                  setDate(value ?? undefined);
+                  setSelectedSlotISO(null);
+                }}
+                selected={date}
+              />
+            </div>
           </div>
 
           <div className="space-y-3">
@@ -219,6 +209,11 @@ export default function DateTimeSlotPicker({
               Available times
             </div>
             <div className="grid grid-cols-2 gap-2">
+              {slots.length === 0 && (
+                <div className="col-span-2 rounded-2xl border border-ink-900/10 bg-white/70 px-4 py-3 text-xs text-ink-600">
+                  Select a date to see available times.
+                </div>
+              )}
               {slots.map((slot) => {
                 const label = formatTimeLabel(slot.start, timezone);
                 const active = selectedSlotISO === slot.startISO;

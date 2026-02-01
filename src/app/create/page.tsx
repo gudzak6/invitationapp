@@ -6,6 +6,7 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
+import useEmblaCarousel from "embla-carousel-react";
 import { gameRegistry } from "@/games/registry";
 import { GameType, Invite } from "@/lib/types";
 import { getSupabaseClient } from "@/lib/supabaseClient";
@@ -34,6 +35,8 @@ function CreateInviteForm() {
     message: ""
   });
   const [gameType, setGameType] = useState<GameType>("fishing");
+  const [previewIndex, setPreviewIndex] = useState(0);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [loading, setLoading] = useState(false);
   const [loadingInvite, setLoadingInvite] = useState(false);
   const [error, setError] = useState("");
@@ -47,6 +50,23 @@ function CreateInviteForm() {
       })),
     []
   );
+
+  const previewGames = useMemo(() => gameOptions, [gameOptions]);
+  const currentPreview = previewGames[previewIndex % previewGames.length];
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => {
+      setPreviewIndex(emblaApi.selectedScrollSnapIndex());
+    };
+    onSelect();
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onSelect);
+    };
+  }, [emblaApi]);
 
   const updateField = (field: keyof typeof formState, value: string) => {
     setFormState((prev) => ({ ...prev, [field]: value }));
@@ -283,6 +303,57 @@ function CreateInviteForm() {
             <p className="text-sm text-ink-600">
               Guests unlock the invite by finishing a short game.
             </p>
+            <div className="glass-panel p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-xs uppercase tracking-[0.25em] text-ink-600">
+                  Game previews
+                </p>
+                <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-ink-500">
+                  {previewIndex + 1} / {previewGames.length}
+                </div>
+              </div>
+              <div className="mt-3 overflow-hidden rounded-2xl border border-ink-900/10 bg-white/80">
+                <div ref={emblaRef} className="overflow-hidden">
+                  <div className="flex">
+                    {previewGames.map((game) => (
+                      <div key={game.key} className="min-w-0 flex-[0_0_100%]">
+                        <img
+                          src={game.previewImage}
+                          alt={`${game.displayName} preview`}
+                          className="h-40 w-full object-contain"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="mt-3 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => emblaApi?.scrollPrev()}
+                  className="rounded-full border border-ink-900/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-ink-900"
+                >
+                  Prev
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setGameType(currentPreview.key);
+                  }}
+                  className="rounded-full bg-ink-900 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-sand-50"
+                >
+                  Select {currentPreview.displayName}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => emblaApi?.scrollNext()}
+                  className="rounded-full border border-ink-900/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-ink-900"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+
             <div className="grid gap-4">
               {gameOptions.map((game) => (
                 <button
