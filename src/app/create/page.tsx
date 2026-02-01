@@ -57,7 +57,7 @@ function CreateInviteForm() {
   useEffect(() => {
     if (!emblaApi) return;
     const onSelect = () => {
-      setPreviewIndex(emblaApi.selectedScrollSnapIndex());
+      setPreviewIndex(emblaApi.selectedSnap());
     };
     onSelect();
     emblaApi.on("select", onSelect);
@@ -312,15 +312,18 @@ function CreateInviteForm() {
                   {previewIndex + 1} / {previewGames.length}
                 </div>
               </div>
-              <div className="mt-3 overflow-hidden rounded-2xl border border-ink-900/10 bg-white/80">
-                <div ref={emblaRef} className="overflow-hidden">
-                  <div className="flex">
+              <div className="mt-3 flex h-[420px] items-center overflow-hidden rounded-2xl border border-ink-900/10 bg-white/80">
+                <div ref={emblaRef} className="h-full w-full overflow-hidden">
+                  <div className="flex h-full">
                     {previewGames.map((game) => (
-                      <div key={game.key} className="min-w-0 flex-[0_0_100%]">
+                      <div
+                        key={game.key}
+                        className="min-w-0 flex-[0_0_100%] h-full"
+                      >
                         <img
                           src={game.previewImage}
                           alt={`${game.displayName} preview`}
-                          className="h-40 w-full object-contain"
+                          className="h-full w-full object-contain"
                         />
                       </div>
                     ))}
@@ -330,7 +333,7 @@ function CreateInviteForm() {
               <div className="mt-3 flex items-center justify-between">
                 <button
                   type="button"
-                  onClick={() => emblaApi?.scrollPrev()}
+                  onClick={() => emblaApi?.goToPrev()}
                   className="rounded-full border border-ink-900/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-ink-900"
                 >
                   Prev
@@ -346,41 +349,12 @@ function CreateInviteForm() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => emblaApi?.scrollNext()}
+                  onClick={() => emblaApi?.goToNext()}
                   className="rounded-full border border-ink-900/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-ink-900"
                 >
                   Next
                 </button>
               </div>
-            </div>
-
-            <div className="grid gap-4">
-              {gameOptions.map((game) => (
-                <button
-                  key={game.key}
-                  type="button"
-                  onClick={() => setGameType(game.key)}
-                  className={`rounded-2xl border px-4 py-4 text-left transition ${
-                    gameType === game.key
-                      ? "border-ink-900/40 bg-white shadow-sm"
-                      : "border-ink-900/10 bg-white/60"
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm font-semibold text-ink-900">
-                      {game.displayName}
-                    </div>
-                    {gameType === game.key && (
-                      <span className="rounded-full bg-ink-900 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-sand-50">
-                        Selected
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-2 text-xs text-ink-600">
-                    {game.description}
-                  </p>
-                </button>
-              ))}
             </div>
           </div>
         </form>
