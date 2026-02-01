@@ -2,9 +2,7 @@ export type GameType =
   | "fishing"
   | "scratch"
   | "pour"
-  | "lockpick"
-  | "wheel"
-  | "memory";
+  | "wheel";
 
 export type Invite = {
   id: string;
