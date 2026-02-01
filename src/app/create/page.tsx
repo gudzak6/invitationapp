@@ -7,6 +7,7 @@ import type { FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
+import type { GameEntry } from "@/games/registry";
 import { gameRegistry } from "@/games/registry";
 import { GameType, Invite } from "@/lib/types";
 import { getSupabaseClient } from "@/lib/supabaseClient";
@@ -42,7 +43,7 @@ function CreateInviteForm() {
   const [error, setError] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<SlotSelection | null>(null);
 
-  const gameOptions = useMemo(
+  const gameOptions = useMemo<Array<GameEntry & { key: GameType }>>(
     () =>
       (Object.keys(gameRegistry) as GameType[]).map((key) => ({
         key,
