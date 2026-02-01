@@ -61,12 +61,10 @@ function CreateInviteForm() {
     };
     onSelect();
     emblaApi.on("select", onSelect);
-    emblaApi.on("init", onSelect);
-    emblaApi.on("resize", onSelect);
+    window.addEventListener("resize", onSelect);
     return () => {
       emblaApi.off("select", onSelect);
-      emblaApi.off("init", onSelect);
-      emblaApi.off("resize", onSelect);
+      window.removeEventListener("resize", onSelect);
     };
   }, [emblaApi]);
 
